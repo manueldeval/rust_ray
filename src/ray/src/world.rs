@@ -8,15 +8,17 @@ pub struct World {
     things: Vec<Box<dyn Thing>>,
     lights: Vec<Light>,
     ambiant_light: Color,
+    max_recurions: u16,
 }
 
 impl World {
-    pub fn new(camera: Camera, things: Vec<Box<dyn Thing>>, lights: Vec<Light>,ambiant_light: Color) -> Self {
+    pub fn new(camera: Camera, things: Vec<Box<dyn Thing>>, lights: Vec<Light>,ambiant_light: Color,max_recurions: u16) -> Self {
         Self {
             camera,
             things,
             lights,
-            ambiant_light
+            ambiant_light,
+            max_recurions,
         }
     }
 
@@ -39,5 +41,9 @@ impl World {
 
     pub fn lights(&self) -> &Vec<Light> {
         &self.lights
+    }
+
+    pub fn max_recurions(&self) -> u16 {
+        self.max_recurions
     }
 }

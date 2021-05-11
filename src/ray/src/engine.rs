@@ -1,7 +1,14 @@
 use std::cmp::Ordering;
 
-
-use crate::{color::{Color, BLACK, WHITE}, image::Image, intersection::{EPSILON, Intersection}, light::Light, ray::Ray, world::World};
+use crate::{
+    color::{Color, BLACK, WHITE},
+    image::Image,
+    intersection::{Intersection, EPSILON},
+    light::Light,
+    ray::Ray,
+    vector::Vector,
+    world::World,
+};
 
 pub struct Engine {
     world: World,
@@ -27,22 +34,23 @@ impl Engine {
 
     fn get_pixel_at(&self, x: u16, y: u16) -> Color {
         let ray = self.world.camera().get_ray(x, y);
-        self.launch_ray(&ray)
+        self.launch_ray(&ray, self.world.max_recurions())
     }
 
-    fn launch_ray(&self, ray: &Ray) -> Color {
+    fn launch_ray(&self, ray: &Ray, max_recurions: u16) -> Color {
         match self.find_intersection(&ray) {
             Some(inter) => {
                 self.ambiant_component(&inter)
                     + self.diffuse_component(&inter)
-                    + self.specular_component(&inter)
+                    + self.specular_component(&inter, ray, max_recurions)
             }
             None => BLACK,
         }
     }
 
     fn ambiant_component(&self, intersection: &Intersection) -> Color {
-        &self.world
+        &self
+            .world
             .thing(intersection.thing_index())
             .ambiant(intersection.position())
             * self.world.ambiant_light()
@@ -87,8 +95,28 @@ impl Engine {
         }
     }
 
-    fn specular_component(&self, _intersection: &Intersection) -> Color {
-        BLACK
+    fn specular_component(
+        &self,
+        intersection: &Intersection,
+        ray: &Ray,
+        max_recurions: u16,
+    ) -> Color {
+        if max_recurions == 0 {
+            BLACK
+        } else {
+            let new_ray_dir = Self::find_specular_direction(ray.dir(), intersection.normal());
+            let new_ray = Ray::new(intersection.position(), &new_ray_dir);
+            self.launch_ray(&new_ray, max_recurions - 1)
+                * self
+                    .world
+                    .thing(intersection.thing_index())
+                    .specular(intersection.position())
+        }
+    }
+
+    fn find_specular_direction(ray_dir: &Vector, normal: &Vector) -> Vector {
+        // https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
+        ray_dir - &(normal * &(2.0 * ray_dir.dot(normal)).into())
     }
 
     fn find_intersection(&self, ray: &Ray) -> Option<Intersection> {
@@ -106,7 +134,7 @@ impl Engine {
             .map(|(thing_index, position)| {
                 let mut normal = self.world.things()[thing_index].normal(&position);
                 if normal.dot(ray.dir()) > 0.0 {
-                    normal = - normal;
+                    normal = -normal;
                 }
                 Intersection::new(
                     thing_index,

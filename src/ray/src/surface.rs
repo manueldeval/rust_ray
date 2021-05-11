@@ -28,11 +28,12 @@ impl ConstColor {
 pub struct Surface {
     ambiant: Box<dyn ColorAt>,
     diffuse: Box<dyn ColorAt>,
+    specular: Box<dyn ColorAt>,
 }
 
 impl Surface {
-    pub fn new(ambiant: Box<dyn ColorAt>, diffuse: Box<dyn ColorAt>) -> Self {
-        Self { ambiant, diffuse }
+    pub fn new(ambiant: Box<dyn ColorAt>, diffuse: Box<dyn ColorAt>, specular: Box<dyn ColorAt>) -> Self {
+        Self { ambiant, diffuse, specular }
     }
 
     pub fn ambiant(&self, position: &Vector) -> Color {
@@ -41,5 +42,9 @@ impl Surface {
 
     pub fn diffuse(&self, position: &Vector) -> Color {
         self.diffuse.color(position)
+    }
+
+    pub fn specular(&self, position: &Vector) -> Color {
+        self.specular.color(position)
     }
 }

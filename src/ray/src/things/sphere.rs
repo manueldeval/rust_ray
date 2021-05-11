@@ -56,4 +56,8 @@ impl Thing for Sphere {
     fn diffuse(&self,position: &Vector) -> Color {
         self.surface.diffuse(position)
     }
+
+    fn specular(&self,position: &Vector) -> Color {
+        self.surface.specular(position)
+    }
 }

@@ -1,11 +1,11 @@
 
-use crate::{ray::Ray, vector::Vector};
+use crate::{ray::Ray, vector::Vector3d};
 #[derive(Debug,Deserialize,Serialize)]
 pub struct Camera {
-    direction: Vector,
-    up: Vector,
-    right: Vector,
-    position: Vector,
+    direction: Vector3d,
+    up: Vector3d,
+    right: Vector3d,
+    position: Vector3d,
     focal_dist: f64,
     image_pixels_width: u16,
     image_pixels_height: u16,
@@ -16,10 +16,10 @@ pub struct Camera {
 
 impl Default for Camera {
     fn default() -> Self {
-        let direction = Vector::x_axis();
-        let right = -Vector::y_axis();
-        let up = Vector::z_axis();
-        let position = Vector::zero();
+        let direction = Vector3d::x_axis();
+        let right = -Vector3d::y_axis();
+        let up = Vector3d::z_axis();
+        let position = Vector3d::zero();
         let focal_dist = 2.0;
         let image_pixels_width = 640;
         let image_pixels_height = 480;
@@ -67,11 +67,11 @@ impl Camera {
         (self.image_pixels_width, self.image_pixels_height)
     }
 
-    pub fn image_spot(&self) -> Vector {
+    pub fn image_spot(&self) -> Vector3d {
         self.position.clone() - (self.direction.clone() * self.focal_dist.into())
     }
 
-    pub fn up_left(&self) -> Vector {
+    pub fn up_left(&self) -> Vector3d {
         self.position.clone() 
             + (self.up.clone() * self.image_len_height.into() / 2.0.into())
             - (self.right.clone() * self.image_len_width.into() / 2.0.into())

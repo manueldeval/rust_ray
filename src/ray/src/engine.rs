@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, collections::btree_map::Range};
+use std::cmp::Ordering;
 
 use crate::{
     color::{Color, BLACK, WHITE},
@@ -7,7 +7,7 @@ use crate::{
     light::Light,
     ray::Ray,
     things::Thing,
-    vector::Vector,
+    vector::Vector3d,
     world::World,
 };
 
@@ -53,7 +53,7 @@ impl Engine {
     }
 
     fn ambiant_component(&self, intersection: &Intersection, thing: &Box<dyn Thing>) -> Color {
-        &thing.surface().ambiant(intersection.position()) * self.world.ambiant_light()
+        &thing.ambiant(intersection.position()) * self.world.ambiant_light()
     }
 
     fn diffuse_component(&self, intersection: &Intersection, thing: &Box<dyn Thing>) -> Color {
@@ -83,7 +83,7 @@ impl Engine {
             match self.find_intersection(&ray_to_light) {
                 Some(obstruction) if obstruction.distance() < distance_to_light => None,
                 _ => Some(
-                    (light.color() * &thing.surface().diffuse(intersection.position())).scale(diffusion_coef),
+                    (light.color() * &thing.diffuse(intersection.position())).scale(diffusion_coef),
                 ),
             }
         } else {
@@ -98,16 +98,16 @@ impl Engine {
         ray: &Ray,
         max_recurions: u16,
     ) -> Color {
-        if max_recurions == 0 || thing.surface().specular(intersection.position()).is_black() {
+        if max_recurions == 0 || thing.specular(intersection.position()).is_black() {
             BLACK
         } else {
             let new_ray_dir = Self::find_specular_direction(ray.dir(), intersection.normal());
             let new_ray = Ray::new(intersection.position(), &new_ray_dir);
-            self.launch_ray(&new_ray, max_recurions - 1) * thing.surface().specular(intersection.position())
+            self.launch_ray(&new_ray, max_recurions - 1) * thing.specular(intersection.position())
         }
     }
 
-    fn find_specular_direction(ray_dir: &Vector, normal: &Vector) -> Vector {
+    fn find_specular_direction(ray_dir: &Vector3d, normal: &Vector3d) -> Vector3d {
         // https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
         ray_dir - &(normal * &(2.0 * ray_dir.dot(normal)).into())
     }
@@ -119,10 +119,10 @@ impl Engine {
         ray: &Ray,
         max_recurions: u16,
     ) -> Color {
-        if max_recurions == 0 || thing.surface().refraction(intersection.position()).is_black() {
+        if max_recurions == 0 || thing.refraction(intersection.position()).is_black() {
             BLACK
         } else {
-            let material_refraction_index = thing.surface().refraction_ratio();
+            let material_refraction_index = thing.refraction_ratio();
             let ratio = if intersection.collide_from_outside() {
                 material_refraction_index
             } else {
@@ -137,7 +137,7 @@ impl Engine {
 
             let new_ray = Ray::new(intersection.position(), &refraction_vector);
 
-            self.launch_ray(&new_ray, max_recurions - 1) * thing.surface().refraction(intersection.position())
+            self.launch_ray(&new_ray, max_recurions - 1) * thing.refraction(intersection.position())
         }
     }
 
@@ -149,7 +149,7 @@ impl Engine {
             // Find intersections with thing
             .flat_map(|(index, thing)| {
                 let intersections = thing.intersect(ray);
-                let intersections_with_index: Vec<(usize, Vector)> = intersections
+                let intersections_with_index: Vec<(usize, Vector3d)> = intersections
                     .iter()
                     .map(|intersection| (index.clone(), intersection.clone()))
                     .collect();

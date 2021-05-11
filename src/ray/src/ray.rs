@@ -1,14 +1,14 @@
-use crate::vector::Vector;
+use crate::vector::Vector3d;
 
 
 #[derive(Debug)]
 pub struct Ray {
-    start: Vector,
-    dir: Vector,
+    start: Vector3d,
+    dir: Vector3d,
 }
 
 impl Ray {
-    pub fn new(start: &Vector, dir: &Vector) -> Self {
+    pub fn new(start: &Vector3d, dir: &Vector3d) -> Self {
         let start = start.clone();
         let dir= dir.norm().unwrap();
         Self {
@@ -17,11 +17,11 @@ impl Ray {
         }
     }  
 
-    pub fn start(&self) -> &Vector {
+    pub fn start(&self) -> &Vector3d {
         &self.start
     }
 
-    pub fn dir(&self) -> &Vector {
+    pub fn dir(&self) -> &Vector3d {
         &self.dir
     }
 

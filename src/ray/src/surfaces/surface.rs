@@ -1,8 +1,8 @@
-use crate::{color::Color, vector::Vector};
+use crate::{color::Color, vector::Vector2d};
 
 #[typetag::serde(tag = "type")]
 pub trait ColorAt {
-    fn color(&self, position: &Vector) -> Color;
+    fn color(&self, uv: &Vector2d) -> Color;
 }
 
 #[derive(Serialize, Deserialize)]
@@ -12,7 +12,7 @@ pub struct ConstColor {
 
 #[typetag::serde(name = "const_color")]
 impl ColorAt for ConstColor {
-    fn color(&self, _position: &Vector) -> Color {
+    fn color(&self, _uv: &Vector2d) -> Color {
         self.color.clone()
     }
 }
@@ -23,6 +23,7 @@ impl ConstColor {
     }
 }
 
+// http://www.irisa.fr/prive/kadi/Cours_LR2V/RayTracing_Texturing.pdf
 #[derive(Serialize, Deserialize)]
 pub struct Surface {
     ambiant: Box<dyn ColorAt>,
@@ -49,20 +50,20 @@ impl Surface {
         }
     }
 
-    pub fn ambiant(&self, position: &Vector) -> Color {
-        self.ambiant.color(position)
+    pub fn ambiant(&self, uv: &Vector2d) -> Color {
+        self.ambiant.color(uv)
     }
 
-    pub fn diffuse(&self, position: &Vector) -> Color {
-        self.diffuse.color(position)
+    pub fn diffuse(&self, uv: &Vector2d) -> Color {
+        self.diffuse.color(uv)
     }
 
-    pub fn specular(&self, position: &Vector) -> Color {
-        self.specular.color(position)
+    pub fn specular(&self,uv: &Vector2d) -> Color {
+        self.specular.color(uv)
     }
 
-    pub fn refraction(&self, position: &Vector) -> Color {
-        self.refraction.color(position)
+    pub fn refraction(&self, uv: &Vector2d) -> Color {
+        self.refraction.color(uv)
     }
     pub fn refraction_ratio(&self) -> f64 {
         self.refraction_ratio

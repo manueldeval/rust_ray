@@ -1,16 +1,16 @@
-use crate::{color::Color, ray::Ray, surface::Surface, vector::Vector};
+use crate::{ray::Ray, surfaces::Surface, vector::{Vector3d,Vector2d}};
 
 use super::Thing;
 
 #[derive(Serialize, Deserialize)]
 pub struct Sphere {
     radius: f64,
-    position: Vector,
+    position: Vector3d,
     surface: Surface,
 }
 
 impl Sphere {
-    pub fn new(position: Vector, radius: f64, surface: Surface) -> Self {
+    pub fn new(position: Vector3d, radius: f64, surface: Surface) -> Self {
         Self { position, radius , surface}
     }
 }
@@ -18,12 +18,12 @@ impl Sphere {
 #[typetag::serde(name = "sphere")]
 impl Thing for Sphere {
 
-    fn normal(&self, position: &Vector) -> Vector {
+    fn normal(&self, position: &Vector3d) -> Vector3d {
         (position.clone() - self.position.clone()).norm().unwrap()
     }
 
         // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection
-    fn intersect(&self, ray: &Ray) -> Vec<Vector> {
+    fn intersect(&self, ray: &Ray) -> Vec<Vector3d> {
         // let l: Vector = self.position.clone() - ray.start().clone();
         // let adj = l.dot(&ray.dir());
         // let d2 = l.dot(&l) - (adj * adj);
@@ -49,7 +49,7 @@ impl Thing for Sphere {
         // distance.map(|t| &(ray.dir() * &t.into()) + ray.start())
 
 
-        let l: Vector = self.position.clone() - ray.start().clone();
+        let l: Vector3d = self.position.clone() - ray.start().clone();
         let adj = l.dot(&ray.dir());
         let d2 = l.dot(&l) - (adj * adj);
         let radius2 = self.radius * self.radius;
@@ -68,4 +68,8 @@ impl Thing for Sphere {
         &self.surface
     }
 
+    fn get_uv_mapping(&self, _position: &Vector3d) -> Vector2d {
+        //todo!("Uv mapping not implemented")
+        0.0.into()
+    }
 }

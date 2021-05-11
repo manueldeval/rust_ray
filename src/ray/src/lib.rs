@@ -6,7 +6,7 @@ pub mod engine;
 pub mod world;
 pub mod things;
 pub mod light;
-pub mod surface;
+pub mod surfaces;
 pub mod intersection;
 pub mod vector;
 

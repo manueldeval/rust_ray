@@ -1,4 +1,5 @@
-pub mod vector;
+pub mod vector3d;
+pub mod vector2d;
 pub mod num;
 pub mod error;
 

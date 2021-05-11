@@ -9,9 +9,11 @@ pub struct Ray {
 
 impl Ray {
     pub fn new(start: &Vector, dir: &Vector) -> Self {
+        let start = start.clone();
+        let dir= dir.norm().unwrap();
         Self {
-            start: start.clone(),
-            dir: dir.norm().unwrap()
+            start,
+            dir,
         }
     }  
 
@@ -22,4 +24,5 @@ impl Ray {
     pub fn dir(&self) -> &Vector {
         &self.dir
     }
+
 }

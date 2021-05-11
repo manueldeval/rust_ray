@@ -79,11 +79,10 @@ impl Camera {
 
     pub fn get_ray(&self, pixel_x: u16, pixel_y: u16) -> Ray {
         let upleft_position = self.up_left();
-        // Something bad there!
+
         let x_increment = self.right.clone() * (self.image_len_width * pixel_x as f64 / self.image_pixels_width as f64).into();
         let y_increment = -self.up.clone() * (self.image_len_height * pixel_y as f64 / self.image_pixels_height as f64).into();
-        //dbg!(&x_increment);
-        //dbg!(&y_increment);
+
         let point_on_screen = upleft_position + x_increment + y_increment;
 
         let dir = point_on_screen.clone() - self.image_spot();

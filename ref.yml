@@ -1,0 +1,52 @@
+---
+max_recurions: 3
+camera:
+  direction:  { x: 1.0, y: 0.0, z: 0.0 }
+  up:         { x: 0.0, y: 0.0, z: 1.0}
+  right:      { x: -0.0, y: -1.0, z: -0.0}
+  position:   { x: 0.0, y: 0.0, z: 0.0}
+  focal_dist: 2.0
+  image_pixels_width: 640
+  image_pixels_height: 480
+  pixel_per_unit: 320.0
+  image_len_width: 2.0
+  image_len_height: 1.5
+lights:
+  - position:  { x: 0.0, y: 2.0, z: 0.0}
+    color:     { r: 1.0, g: 1.0, b: 1.0}
+ambiant_light: { r: 1.0, g: 1.0, b: 1.0}
+things:
+  - type: sphere
+    radius: 1.0
+    position: { x: 10.0, y: 0.8, z: 0.0}
+    surface:
+      ambiant: { type: const_color, color: { r: 0.2, g: 0.0, b: 0.0} }
+      diffuse: { type: const_color, color: { r: 0.8, g: 0.2, b: 0.8} }
+      specular: { type: const_color, color: { r: 0.0, g: 0.0, b: 0.0} }
+      refraction: { type: const_color, color: { r: 0.0, g: 0.0, b: 0.0} }
+      refraction_ratio: 1.2
+
+
+  - type: sphere
+    radius: 1.0
+    position:  { x: 5.0, y: -0.8, z: 0.0}
+    surface:
+      ambiant:   { type: const_color, color: { r: 0.0, g: 0.0, b: 0.0} }
+      #diffuse:  { type: const_color, color: { r: 0.7, g: 0.7, b: 0.7} }
+      diffuse:  { type: const_color, color: { r: 0.2, g: 0.2, b: 0.2} }
+      specular:  { type: const_color, color: { r: 0.0, g: 0.0, b: 0.0} }
+      refraction: { type: const_color, color: { r: 0.8, g: 0.8, b: 0.8} }
+      refraction_ratio: 1.2
+
+  - type: sphere
+    radius: 1.0
+    position: { x: -10.0, y: 0.8, z: 0.0}
+    surface:
+      ambiant: { type: const_color, color: { r: 0.2, g: 0.0, b: 0.0} }
+      diffuse: { type: const_color, color: { r: 0.8, g: 0.8, b: 0.8} }
+      specular: { type: const_color, color: { r: 0.0, g: 0.0, b: 0.0} }
+      refraction: { type: const_color, color: { r: 0.0, g: 0.0, b: 0.0} }
+      refraction_ratio: 1.2
+
+
+

@@ -1,5 +1,5 @@
 
-use std::{fs::File, io::BufReader};
+use std::{fs::File, io::BufReader, time::Instant};
 
 use clap::{App, Arg};
 use pixel_canvas::Canvas;
@@ -24,7 +24,11 @@ fn main() {
 
     let world: World = serde_yaml::from_reader(reader).unwrap();
     let engine = Engine::new(world);
+    let start = Instant::now();
     let image_to_display = engine.generate();
+    let duration = start.elapsed();
+    println!("Time elapsed: {:?}", duration);
+
     display_image(image_to_display);
 }
 
